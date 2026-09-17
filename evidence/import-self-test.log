@@ -1,0 +1,7 @@
+Uninstalled 1 package in 2ms
+Installed 1 package in 2ms
+{"case": "complete-four", "phase": "target_oracle", "vertices": 0}
+{"case": "complete-four", "source": {"adj": [[0, 1, 1, 1], [1, 0, 1, 1], [1, 1, 0, 1], [1, 1, 1, 0]]}, "target": {"adj": []}, "source_yes": false, "target_witness": {"order": [], "queues": []}}
+{"case": "edge", "phase": "target_oracle", "vertices": 2}
+{"case": "edge", "source": {"adj": [[0, 1], [1, 0]]}, "target": {"adj": [[0, 1], [1, 0]]}, "source_yes": true, "target_witness": {"order": [0, 1], "queues": [0]}}
+{"self_test": "pass", "source_cases": 7, "target_oracle_cases": 3, "malformed_outputs_rejected": 4, "incorrect_subprocess_fixtures_rejected": 2, "solver": "5.1.0"}

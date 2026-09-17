@@ -1,0 +1,1 @@
+{"self_test": "pass", "source_cases": 7, "target_oracle_cases": 3, "malformed_outputs_rejected": 4, "solver": "5.1.0"}

@@ -1,0 +1,13 @@
+Command: python3 campaigns/two-queue-recognition/work/verify.py --candidate campaigns/two-queue-recognition/work/algorithm.py
+
+The full 32-vertex CP-SAT query was interrupted with SIGINT after a separate
+CP-SAT query proved that an induced 14-vertex subgraph is infeasible. The
+full-target query returned UNKNOWN, and the verifier failed explicitly:
+
+RuntimeError: UNKNOWN
+
+No infeasibility claim is based on that interrupted query. The independent
+induced-subgraph certificate proves the full target is NO because restricting
+any queue layout to an induced subgraph preserves validity. The final verifier
+uses that smaller certificate directly. The earlier completed decisions and
+recovery outputs are preserved in cp-sat-full-target-partial.jsonl.

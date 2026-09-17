@@ -1,0 +1,9 @@
+[project]
+name = "two-queue-recognition"
+version = "0.1.0"
+requires-python = ">=3.12,<3.13"
+dependencies = [
+  "z3-solver==5.1.0.0",
+  "networkx==3.6.1",
+  "ortools==9.15.6755"
+]
