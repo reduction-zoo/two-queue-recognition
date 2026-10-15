@@ -1,0 +1,2 @@
+Command: python3 research/evidence/two-queue-recognition/probe.py 6 6 2
+Stopped by SIGINT after the five-copy deletion argument superseded this exploratory test. No per-instance results were emitted; the scan is incomplete. This is not a timeout or a mathematical exclusion.

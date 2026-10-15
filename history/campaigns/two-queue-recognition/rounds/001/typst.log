@@ -1,0 +1,9 @@
+error: unknown variable: vee
+   ┌─ campaigns/two-queue-recognition/work/manuscript.typ:25:193
+   │
+25 │ For the source graph $G$, form five vertex-disjoint copies $G_1,...,G_5$ and let $X$ be their disjoint union. Add vertices $a,b$, the edge $a b$, and every edge from either apex to $V(X)$. If $vee$ denotes graph join, the forward map is
+   │                                                                                                                                                                                                  ^^^
+   │
+   = hint: if you meant to display multiple letters as is, try adding spaces between each letter: `v e e`
+   = hint: or if you meant to display this as text, try placing it in quotes: `"vee"`
+

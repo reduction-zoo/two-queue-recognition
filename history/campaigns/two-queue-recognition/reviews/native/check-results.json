@@ -1,0 +1,46 @@
+{
+  "result": "pass",
+  "positional_hypotheses": 16962,
+  "forward_graphs": 76,
+  "recovery_calls": 358,
+  "source_no_graphs": 1,
+  "malformed_inputs": 13,
+  "complete_six_orders": 720,
+  "counterexample_source_orders": 720,
+  "sampled_target_orders": 2100,
+  "single_copy_counterexample_witness": {
+    "order": [
+      4,
+      0,
+      7,
+      6,
+      2,
+      1,
+      3,
+      5
+    ],
+    "queues": [
+      1,
+      1,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      1,
+      0,
+      1,
+      0,
+      0,
+      0,
+      0,
+      1,
+      1,
+      0,
+      1,
+      1,
+      0
+    ]
+  }
+}

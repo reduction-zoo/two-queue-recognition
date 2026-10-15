@@ -1,0 +1,1420 @@
+SIAM J. COMPUT.                                                   () 1992 Society for Industrial and Applied Mathematics
+Vol. 21, No. 5, pp. 927-958, October 1992                                                                           OO8
+
+
+
+
+                               LAYING OUT GRAPHS USING QUEUES*
+                            LENWOOD S. HEATHt AND APNOLD L. IOSENBEIGt
+    Abstract. The problem of laying out the edges of a graph using queues is studied. In a k-queue layout,
+vertices of the graph are placed in some linear order and each edge is assigned to exactly one of the k queues
+so that the edges assigned to each queue obey a first-in/first-out discipline. This layout problem abstracts a
+design problem of fault-tolerant processor arrays, a problem of sorting with parallel queues, and a problem of
+scheduling parallel processors. A number of basic results about queue layouts of graphs arc established, and
+these results are contrasted with their analogues for stack layouts of graphs (the book-embedding problem).
+The 1-queue graphs (they arc almost leveled-planar graphs) are characterized. It is proved that the problem
+of recognizing 1-queue graphs is NP-complete. Queue layouts for some specific classes of graphs are given.
+Relationships between the qucuenumbcr of a graph and its bandwidth and separator size arc presented. An
+apparent tradcoff between the qucucwidth and the number of queues allowed in layouts of complete binary
+trees is indicated.
+
+    Key words, queue layout, stack layout, book embedding, graph embedding, bandwidth, separators, NP-
+completeness, fault-tolerant computing, scheduling parallel processors
+
+     AMS(MOS) subject classifications. 05C99, 68Q15, 68Q25, 68R10, 94C15
+
+       1. Introduction.
+     1.1. The problem. We study the use of queues to compute linear layouts of graphs,
+in the following sense. A k-queue layout of an undirected graph G            (V, E) has two
+aspects. The first aspect is a linear order of V (which we think of as being on a horizontal
+line). The second aspect is an assignment of each edge in E to one of k queues in such
+a way that the set of edges assigned to each queue obeys a first-in/first-out discipline.
+Think of scanning the vertices in order from left to right. When the left endpoint of
+an edge is encountered, the edge enters its assigned queue (at the back of the queue).
+When the right endpoint of an edge is encountered, the edge exits its assigned queue (and
+must, therefore, be at the front of the queue). If a queue is examined at any instant, the
+edges in the queue are in the order of their right endpoints, with the leftmost of those
+right endpoints belonging to edges at the head of the queue. The freedom to choose
+the order of V and the assignment of E so as to optimize some measure of the resulting
+layout constitutes the essence of the queue layout problem.
+     More formally, a k-queue layout QL of an n-vertex undirected graph G (V, E)
+consists of a linear order of V, denoted cr 1,-.., n, and an assignment of each edge in
+                                            ,
+E to exactly one of k queues, ql,- qk. Each queue qj operates as follows. The vertices
+of V are scanned in left-to-right (ascending) order. When vertex i is encountered, any
+edges assigned to q that have vertex i as their right endpoint must be at the front of
+that queue; they are removed (dequeued). Any edges assigned to qj that have vertex i
+as left endpoint are placed on the back of that queue (enqueued), in ascending order
+of their right endpoints, k is the queuenurnber of the layout. The queuenumber of G,
+QN(G), is the smallest k such that G has a k-queue layout; G is said to be a k-queue
+graph. Let w(i, q) be the number of edges in q just before vertex i is encountered.
+Then the queuewidth of q is QW(q)              maxiev w(i, qj). The maximum queuewidth
+
+      Received by the editors October 15, 1990; accepted for publication (in revised form) September 11, 1991.
+ This research was supported by National Science Foundation grants DCI-87-96236, CCR-88-12567, and CCR-
+ 90-09953.
+        Department of Computer Science, Virginia Polytechnic Institute and State University, Blacksburg, Vir-
+ ginia 24061.
+      tDepartment of Computer Science, University of Massachusetts, Amherst, Massachusetts 01003.
+                                                      927
+928
+
+
+
+
+                -
+Of the layout is QW(QL)
+CQW(QL)
+                        LENWOOD S. HEATH AND ARNOLD L. ROSENBERG
+
+
+                  QW(qj).
+                            maxj QW(qj). The cumulative queuewidth of the layout is
+
+    As an example of a 1-queue layout, consider the graph G in Fig. 1.1. A 1-queue
+layout of G is shown in Fig. 1.2. The linear order of V is a, f, b, e, c, d. The order in
+which edges pass through the single queue is
+
+                  (a, f), (a, b), (f, b), (f, e), (b, e), (b, c), (b, d), (e, d), (c, d).
+Note that edges having the same left endpoint enter the queue in an order determined by
+their right endpoints. For example, edge (a, f) must enter the queue before edge (a, b)
+since f is to the left of b.
+
+
+
+
+                                       FIG. 1.1. Example graph G.
+
+
+
+
+                                         FIG. 1.2. 1-queue layout.
+
+     Dually, a k-stack layout of graph G also has two aspects. The first aspect is again
+a linear order of V. The second aspect is an assignment of each edge in E to one of k
+stacks in such a way that the set of edges assigned to each stack obeys a last-in/first-out
+discipline. Unlike a queue layout, edges do not exit a stack in the same order in which
+they enter it.
+     More formally, a k-stack layout SL of an undirected graph consists of a linear order
+of V and an assignment of each edge in E to exactly one of k stacks, Sl,..., sk. Each
+stack s operates as follows. The vertices of V are scanned in left-to-right (ascending)
+order. When vertex i is encountered, any edges assigned to s that have vertex i as their
+right endpoint must be on the top of that stack; they are removed (popped). Any edges
+assigned to sj that have i as left endpoint are placed on the top of the stack (pushed),
+in descending order of their right endpoints, k is the stacknumber of the layout. The
+stacknumber of G, SN(G), is the smallest k such that G has a k-stack layout; G is said
+to be a k-stack graph. Let w(i, s) be the number of edges in s just before vertex is
+encountered. Then the stackwidth of sy is SW(sy)         maxiev w(i, sj). The maximum
+stackwidth of the layout is SW(SL)       maxy SW(sy). The cumulative stackwidth of the
+layout is CSW(SL)          -y
+                           SW(sy).
+                         LAYING OUT GRAPHS USING QUEUES                                   929
+
+    As an example, Fig. 1.3 shows a 1-stack layout of the graph G in Fig. 1.1. The linear
+order of V is a, b, c, d, e, f. The order in which edges enter the stack is
+
+                (a, f), (a, b), (b, f), (b, e), (b, d), (b, c), (c, d), (d, e), (e, f).
+The order in which edges exit the stack is
+
+                (a, b), (b, c), (c, d), (b, d), (d, e), (b, e), (e, f), (b, f), (a, f).
+
+
+
+
+                                       FG. 1.3. 1-stack layout.
+
+     The queue (respectively, stack) layout problem generalizes the problem of permut-
+ing a sequence using parallel queues (respectively, stacks) that was studied by Even and
+Itai [7] and Tarjan [26]. Let 7r be a permutation defined on { 1,..., n}. Define the bipar-
+tite graph G by
+
+                                 V {al,’’’, an, b,..., b,},
+                                 E- {(a,b) 1 _< i _< n};
+G is a perfect matching on 2n vertices. Then realizing 7r by k parallel queues (respec-
+tively, stacks) is equivalent to laying G out using k queues (respectively, stacks) when V
+is ordered al,..., an, b(1),..., b(,).
+     1.2. Motivation. Our study and the particular questions we focus on have a tripar-
+tite motivation.
+     Comparing queues and stacks. Queues and stacks are, intuitively, dual in "power"
+as computing mechanisms, in that queues epitomize a first-in-first-out discipline while
+stacks epitomize a last-in-first-out discipline. This intuition is strengthened formally
+when queues and stacks are used to compute fixed permutations (Tarjan [26]), largely
+as a consequence of the 1936 theorem of Erd6s and Szekeres [6] about monotonic se-
+quences in permutations. However, the intuition is called into doubt when queues and
+stacks are used as worktapes for Turing machines, because a single queue endows a Tur-
+ing machine with universal computing power, whereas two stacks are needed to achieve
+comparable power. Here, we compare the powers of queues and stacks as devices for
+linearizing graphs: one "loads an edge" into the linearization device when its left end is
+laid out, and one "unloads" it when its right end is laid out. We find this comparison of
+the powers of queues and stacks to be much more complicated than the other two. To
+wit,
+930                  LENWOOD S. HEATH AND ARNOLD L. ROSENBERG
+
+       1. Stacks appear to be simpler than queues, in that the task of recognizing 1-stack
+           graphs is computationally easy (in fact, linear time), while the analogous task
+           for 1-queue graphs is NP-complete;
+       2. Queues appear to be simpler than stacks, in that, when the linearization of the
+           vertices is preordained, the task of determining the queuenumber of the graph
+           is computationally easy (almost linear time), while the task of determining the
+           stacknumber is NP-complete;
+       3. Queues appear to be dual in power to stacks, in that a tradeoff inequality of
+           the Erd6s-Szekeres type holds for the queuenumber and stacknumber require-
+           ments of a graph when the linearization of its vertices is fixed [16];
+       4. Queues appear to be more powerful than stacks, in that there exist graphs whose
+           minimum queuenumbers are exponentially smaller than their minimum stack-
+           numbers.
+     These comparisons are a central theme in this paper. Note that stack layouts have
+been studied extensively, under the aegis of the problem of embedding graphs in books
+[2], [5], while ours is the first major study of queue layouts.
+     The DIOGENES design methodology. In DIOGENES [24], an array of communi-
+cating processors is implemented in a conceptual line, and some number of hardware
+queues and/or stacks pass over the entire line. The queues and/or stacks implement the
+communication links among processors in such a way that faulty processors are ignored,
+and all good processors are utilized. If the processors and their connections are repre-
+sented by an undirected graph, then the DIOGENES layout problem is equivalent to a
+graph layout problem, where edges are assigned to conceptual queues and/or stacks. The
+variant of DIOGENES in which only stacks are used is one motivation for the studies
+of the book embedding problem: Bernhart and Kainen [2]; Buss and Shor [4]; Chung,
+Leighton, and Rosenberg [5]; Games [8]; Heath [11], [12], [13]; Heath and Istrail [14],
+[15]; Obreni6 [21]; and Yannakakis [27]. Note that only Rosenberg [24] has considered
+queues before. The present research intends to investigate the same issues for queues
+that [5] does for stacks. In particular, we find significant instances of divergence between
+queue and stack layouts.
+     Scheduling parallel processors. Consider the following simple model of schedul-
+ing parallel computations in an architecture-independent fashion; cf. [22]. We represent
+the computation to be scheduled as a directed acyclic graph (dag) whose nodes repre-
+sent the processes to be executed and whose arcs indicate computational dependencies:
+a process-node cannot be executed until all of its predecessors in the dag have been exe-
+cuted. Processes are queued up in a FIFO Processor Queue (PQ) as they become eligible
+for execution; each idle processor "grabs" the process at the head of the PQ. Our study
+focuses on the management of data in this scenario: where will the inputs to process P
+be when P is "grabbed"by a processor? Our solution is to have the PQ be coordinated
+with a Data Manager (DM), which itself is a collection of FIFO queues: When a process
+terminates, it places its "outputs" on the queues of the DM in such a way that when pro-
+cess P is "grabbed" by a processor, all inputs to P are at the heads of the DM queues.
+Our queue-based graph linearization problem idealizes this approach to the scheduling
+problem: The computation dag is the graph to be linearized; the linearization process
+implicitly specifies the loading of the PQ; the queues that control the linearization com-
+prise the DM. In this abstract we idealize the problem even a step further by replacing
+the computation dag by an ordinary (undirected) graph. In subsequent work, we plan to
+study a more faithful version of the scheduling problem.
+                        LAYING OUT GRAPHS USING QUEUES                                  931
+
+     1.3. Results. Investigating queues at this level of generality has proved a fruitful
+enterprise. The harvest comprises a number of fundamental results for queue layouts as
+well as some surprising contrasts with stack layouts.
+     We summarize the highlights that are included in this paper and in the companion
+paper [16]. A new class of planar graphs, arched leveled-planar graphs, is shown to be
+a characterization of the 1-queue graphs. While 1-stack (outerplanar) graphs are easy
+to recognize (in fact, can be recognized in linear time), the recognition problem for 1-
+queue graphs is NP-complete. On the other hand, the number of queues in a fixed-order
+layout of an arbitrary graph is easily minimized in polynomial time, while the same prob-
+lem for stacks is NP-complete [10]. Any 1-queue graph can be laid out with 2 stacks, and
+any 1-stack graph can be laid out with 2 queues 16]. An obvious generalization of these
+results fails: there is a class of graphs, the ternary hypercubes, that require exponentially
+more stacks than queues [16]. We investigate the queuenumber of some specific fami-
+lies of graphs and compare these to known stacknumber results. We show relationships
+between the queuenumber of a graph G and both the bandwidth and separator size of
+G. Finally, we expose an apparent tradeoff between queuenumber and queuewidth for
+layouts of complete binary trees.
+     The paper is organized as follows. Section 2 contains results on fixed-order layouts,
+including our polynomial-time algorithm for determining the queuenumber of such a lay-
+out. Section 3 characterizes 1-queue graphs and proves that recognizing 1-queue graphs
+is NP-complete; none of the later results depends on the NP-completeness proof. In
+4, we investigate queue layouts for a number of familiar classes of graphs. In 5, we
+show relationships between the queuenumber of a graph and its bandwidth and separa-
+tor size. Section 6 indicates an apparent tradeoffbetween queuenumber and queuewidth
+for complete binary trees. In the final section, we conclude with some open problems and
+a table comparing queuenumber and stacknumber for some specific classes of graphs.
+     2. Fixed-order layouts. In this section, we fix an order a      1, 2,..., n of V and
+examine the difficulty of minimizing the number of queues or stacks required to complete
+cr to a layout. Results include an optimal and efficient algorithm for fixed-order queue
+layouts. We contrast the existence of this efficient algorithm with the NP-completeness
+of the analogous problem for stack layouts.
+     We concentrate on sets of edges that are obstacles to minimizing the number of
+stacks or queues. A k-rainbow is a set of k edges
+
+                                 {e-- (a,b), 1 < < k}
+such that
+
+                al < a2 <’" < ak-1 < ak < bk < bk-1 <"" < b2 < bl;
+
+in other words, a rainbow is a nested matching. A k-twist is a set of k edges
+
+                                 {e     (a,b), 1 _< i < k}
+such that
+
+                al < a2 <... < ak-1 < ak < bl < b2 <"" < bk-1 < bk;
+
+in other words, a twist is a fully intersecting matching.
+     A rainbow is an obstacle for a queue layout because no two nested edges can be
+assigned to the same queue.
+932                    LENWOOD S. HEATH AND ARNOLD L. ROSENBERG
+
+     PROPOSITION 2.1. Assume that tr has a k-rainbow. Then every queue layout of cr uses
+at least k queues. There exists a stack layout of r in which all edges of the k-rainbow are
+assigned to the same stack.
+      A twist is an obstacle for a stack layout because no two intersecting edges can be
+assigned to the same stack.
+      PROPOSITION 2.2. Assume that cr has a k-twist. Then every stack layout of cr uses at
+least k stacks. There exists a queue layout of tr in which all edges of the k-twist are assigned
+to the same queue.
+      The largest rainbow in tr determines the smallest number of queues needed in a
+queue layout of r.
+      THEOREM 2.3. If or has no rainbow of more than k edges, then there is a k-queue layout
+for Such a layout can be found in time O([E[ log log r).
+     r.
+      Proof. We describe an algorithm for assigning the edges of G to k queues, denoted
+q, q,..., q. The algorithm uses an (n+ 1)-position array R[0..n]; initially, R[0] n+ 1,
+and all other R[i]         0. At each step of the algorithm, each array position R[i], for
+ 1 < i < n, contains the larger of 0 and the name of the rightmost vertex of any edge that
+has been assigned to queue q to that point; the assignment R[0] n + I simplifies the
+algorithm, by creating the fiction that there is an edge in fictitious queue q0 connecting
+fictitious vertices 0 and n / 1. The algorithm maintains the invariant that nonzero entries
+in R are in strictly decreasing order: if R[i 1] > 0, then R[i 1] >/[i]. Clearly, the
+ initial assignment to R satisfies this condition.
+      We actually maintain the array R in the balanced search tree data structure of John-
+ son [18]. The specific purpose of his data structure is to maintain a subset of a bounded
+ set of integers { 1, 2,..-, m}. It does so with O(log log m) worst-case time for insertions,
+ deletions, and accesses. As the entries in R are between 0 and r + 1, the O(log r) time
+ to perform a traditional binary search in R is reduced to O(log log n).
+      Process the vertices in order, left to right. At each vertex s, scan the edges having
+ s as left endpoint twice. When edge (s, t), s < t, is reached in the first scan, perform a
+ binary search in R to find the queue q such that
+                                     R[i- 1] > t >_ R[i].
+Assign edge (s, t) to queue qi. In the second scan of edges leaving s, update R to reflect
+the assignment of edges to queues. Clearly the algorithm maintains the conditions on
+R, and the edge assignment yields a queue layout.
+     It remains to show that, if some edge is assigned to queue qk, then a has a k-rainbow.
+Suppose (s, t) is assigned to queue qk. Since R[k 1] > t when vertex s is processed,
+edge (s, t) must nest inside some edge (v, R[k 1]) in queue qk-1. Since t is assigned
+to queue k in the first scan, while R[k 1] is updated in the second scan, the two scans
+at vertex s guarantee that v < s. By an easy induction, this observation extends to show
+that there are k nested edges, i.e., a k-rainbow.
+     The time complexity follows from the O(log log n) search time for each edge.               ]
+     We might expect the dual result for stacks to hold; that is, if the largest twist in cr is a
+k-twist, then the stacknumber of a is k, and a k-stack layout can be found in polynomial
+time. However, this is far from being true. For the fixed order a, assigning edges to
+stacks is equivalent to coloring circle graphs [7]. While it is possible to determine the
+largest twist size for a in polynomial time (Hsu [17]), minimizing the number of stacks
+cannot be done in polynomial time unless P NP because coloring circle graphs is NP-
+complete (Garey, Johnson, Miller, and Papadimitriou [10]). To summarize, we have the
+following.
+                       LAYING OUT GRAPHS USING QUEUES                                  933
+
+    PROPOSITION 2.4 (see [7], [10]). The problem of minimizing the number of stacks
+required by a fixed order tr is NP-complete.
+    In this minimization sense, fixed-order queue layouts are easier than fixed-order
+stack layouts.
+     3. One-queue graphs. This section studies the class of 1-queue graphs, with the fol-
+lowing results. Just as the 1-stack graphs admit a complete characterization as a class
+of planar graphs, so do the 1-queue graphs. However, whereas the 1-stack characteri-
+zation is in terms of a known strengthening of the property of planarity (namely, outer-
+planarity), the 1-queue characterization employs a new strengthening (namely, arched-
+leveled planarity). Neither of these subclasses of the planar graphs includes the other.
+Whereas the 1-stack graphs can be recognized in linear time, we show that the recogni-
+tion problem for 1-queue graphs is NP-complete. Thus, the recognition problem con-
+trasts with the fixed-order layout problem, in that it points out a sense in which queues
+are more complicated than stacks.
+     3.1. Characterizing 1-queue graphs. Bernhart and Kainen [2] give the following
+characterization of 1-stack graphs.
+     PROPOSITION 3.1 (see [2]). G is a 1-stack graph if and only if G is outerplanar.
+     (An outerplanar graph is a planar graph having a planar embedding in which all ver-
+tices appear on a common face.) We show that the 1-queue graphs that have a particular
+kind of planar embedding are also planar graphs.
+     Consider the normal cartesian (z, y) coordinate system for the plane. For i an inte-
+       e
+ger, let be the vertical line defined by       { (i, t) It E Reals}. A graph G (V, E) is
+leveled-planar if V can be partitioned into levels V1, V2,         ,
+                                                                V, in such a way that
+          G has a planar embedding in which all vertices of V are on the line g;
+          Each edge in E is embedded as a straight-line segment wholly between and
+          +1 for some i.
+     Such a planar embedding is called a leveled-planar embedding. Figure 3.1 shows a
+leveled-planar graph having 3 levels. Henceforth, we assume that a valid (but arbitrary)
+leveled-planar embedding is given along with a leveled-planar graph.
+
+
+
+
+                                FIG. 3.1. A leveled-planargraph.
+
+     A leveled-planar embedding induces an order (the induced order) on V as follows.
+As i takes the values 1, 2,-.., m, scan line from bottom to top. Label the vertices
+1, 2,..., n as they are encountered. For 1 _< i _< m, let bi be the (bottom) first vertex in
+level i, and let t be the (top) last. Let s be the first vertex in level that is adjacent to
+some vertex in level i + 1, or, if there are no edges between levels i and i + 1, let s t.
+934                   LENWOOD S. HEATH AND ARNOLD L. ROSENBERG
+
+Consider augmenting G with new edges. A level-i arch for G is an edge connecting vertex
+ti with vertex j, where bi < j < min(ti 1, si). A leveled-planar graph G, augmented by
+any number of arches, can be embedded in the plane by drawing the arches around level
+1; because of the leveling, the arches do not cross. See Fig. 3.2 where (3, 5) and (6, 8) are
+arches. A leveled-planar graph augmented by (zero or more) arches is called an arched
+leveled-planar graph. The edges that are not arches are called leveled edges. An arched
+leveled-planar graph that cannot be augmented with further arches or leveled edges is
+maximal. See Fig. 3.3 for an example. The above definitions for bi, si, and ti will be used
+throughout the paper to refer to vertices in arched leveled-planar graphs.
+
+
+
+
+                                     FIG. 3.2. Drawing arches.
+
+
+
+
+                          FIG. 3.3. A maximal arched leveled-planar graph.
+
+     We can now state the characterization of 1-queue graphs.
+     THEOREM 3.2. A graph G is a 1-queue graph if and only if G is an arched leveled-planar
+graph.
+     We develop the proof of the theorem through three lemmas.
+     LEMMA 3.3. Every leveled-planar graph is a 1-queue graph. The induced order of ver-
+tices yields a 1-queue layout.
+                                                                                ,
+     Proof. Given a leveled-planar graph G (V, E) with m levels V1, V2,- V,,, order
+V in the induced order 1,..., n. We claim that this order yields a 1-queue embedding of
+G. It suffices to show that no two edges nest. If two edges have a vertex in common, then
+
+                              .
+the edges cannot nest. So consider two edges (u, v) and (u, vg.) such that u < v,
+u2 <  ,    ul < u, and           If u and u are in the same level V, then and 2 are
+in the same level V+, and vl < v because the edges do not intersect in the leveled-
+                          LAYING OUT GRAPHS USING QUEUES                              935
+
+planar embedding. If u and u are in different levels, g and m > g, respectively, then
+and v are in different levels, g + 1 and m + 1, respectively, and again v < v. In either
+case, the two edges do not nest. Hence, the given layout is a 1-queue layout of G.
+     LEMMA 3.4. Every arched leveled-planargraph is a 1-queue graph. The induced order
+of vertices yields a 1-queue layout.
+     Proof. Let G (V, E) be an arched leveled-planar graph. By the previous lemma,
+it suffices to show that no arch nests with another edge.
+     Let (Ul, ti) and (u2, tj) be two arches. If ti tj, then the arches do not nest since
+they have a vertex in common. If t t, say t < t, then u < t < u2 < t, and the
+arches do not nest.
+     Now say that (u3, v3), u3 < v3, is a leveled edge between levels k and k + 1. Since
+every arch is between two vertices on the same level, no leveled edge can nest inside an
+arch. Conversely, for the arch (u, h) to nest inside (ua, va), we must have ua < Ul <
+t < v3. There are two cases:
+       1. If u3 is on the same level as the arch, then ul < u3, a contradiction to u3 <
+      2. If v3 is on the same level as the arch, then v3 < ti, a contradiction to t <
+     Thus, (ul, t) and (u3, v3) do not nest. We conclude that we have a 1-queue layout
+for G.
+     LEMMA 3.5. Every 1-queue graph is an arched leveled-planar graph.
+    Proof. Let G (V, E) be an arbitrary 1-queue graph, and let a 1, 2,..., n be the
+order of a 1-queue layout of G. It suffices to describe an arched leveled-planar embed-
+ding of G. Without loss of generality, we may assume that G is connected.
+     Partition V into levels, as follows. Level V1 is the singleton {1 }, so that bl   s
+t     1. For i > 1, until each vertex is placed in some level, set
+          bi t-I + 1;
+          ti equal to the rightmost vertex incident to some vertex in V_ 1;
+         Vi {bi,’",ti};
+         s equal to the leftmost vertex in V that is adjacent to some vertex to the right
+         of ti; si   ti if ti   n.
+     Let the resulting partition be V1, V2,..., Vm. This partition breaks the sequence
+into m contiguous subsequences that end at 1         t l, t2,..., tm  n, respectively. By
+the construction of V, it is clear that no edge connects a vertex in V with a vertex in
+Vj if li Jl > 2. Let Ee be the subset of E consisting of edges that connect vertices at
+consecutive levels; that is,
+
+                         Ee     {(u, v) for some i, u e Vi, v e V/+I}.
+
+
+
+
+                                             _
+     Construct a leveled-planar embedding of Ge (V, Ee). Place the vertices of V on
+line g in the order b, b + 1,..., t from bottom to top. Draw the edges in Ee as line
+segments. We must show that this is indeed a leveled-planar embedding of Ge. It suffices
+to show that any two distinct edges, (Ul, Vl), Ul ( Vl, and (u2, v2), u2 < v2, do not cross
+in the embedding. Without loss of generality, say that U         ’//;2. If ul  u2, then the
+edges do not cross because they share an endpoint. So say that U <
+are embedded on different lines, then the edges cannot intersect because all edges go
+between adjacent lines. If U and u2 are on the same line, say line gi, then the queuing
+discipline guarantees that ’0,1 < U2 < Vl V2 and that Vl and v2 are both embedded on
+line gi+l. Therefore, edges (Ul, Vl) and (u, v2) do not cross.
+     It remains to show that E Ee contains only arches for Ge. Let
+where u3, v3 V/, u3 < v3. Clearly, u3 _< min(ti 1, si) since otherwise there is an edge
+from s to some vertex in V+I that nests over (ua, va). Since t is adjacent to some vertex
+936                   LENWOOD S. HEATH AND ARNOLD L. ROSENBERG
+
+Z    V/_l, we must have va ti, for otherwise (z, t) and (ua, va) nest. We conclude that
+(ua, va) is an arch for Ge. Since that edge was arbitrary, it follows that E Ee contains
+only arches, so we have constructed an arched leveled-planar embedding of G.         [3
+    Theorem 3.2 follows from Lemmas 3.4 and 3.5.
+    The structural result of Theorem 3.2 allows us to determine the maximum number
+of edges in a 1-queue graph. It is well known that a maximal outerplanar graph on n
+vertices contains 2n- 3 edges. A similar result is now shown for maximal arched leveled-
+planar graphs. These bound are useful for establishing lower bounds on queuenumber
+or stacknumber; cf. Proposition 4.11.
+     THEOREM 3.6. Let G (V, E) be a 1-queue graph having a maximal arched leveled-
+planar embedding of m levels. Assume that A of the levels V1,..., Vm-1 are singletons.
+Then G has exactly
+                            2lVl- 1 -lEvi- A < 2lVl- 3
+edges.
+    Proof. Partition E into levels E,..., Em, where an edge is in level E if its left
+endpoint is in V. Then all level-/arches are in Ei, and E, contains only arches. For
+convenience, let to      0.
+     First we count the arches in the given embedding. By maximality of the embedding,
+          E contains s t_ arches if s t and s t_ 1 arches if s t;
+          If bi ti (i.e., if [VI > 1), then there is a leveled edge connecting ti 1 to level
+          i + 1, so that s t.
+Thus Ei contains si ti_          1 0 arches only when V is a singleton.
+     Now we count the leveled edges in the embedding. Each leveled edge in E, 1 <
+i < m 1, has one endpoint among t s + 1 vertices in level and one endpoint
+among t+x t vertices in level i / 1. By planarity, there is a bottom-to-top order on
+the set of leveled edges in E. Scanning these edges in order, the first edge connects two
+vertices, and each subsequent edge connects a new vertex to a previously encountered
+vertex (because of maximality). Thus, the number of leveled edges in Ei is
+                        (t+ t) + (ti- si + 1)          ti+l si. 1
+      Combining the counts of the preceding two paragraphs, for 1 < < m                     1,
+
+
+                                      ti+l     ti_          1   if IV l        1.
+
+By analogous reasoning,
+                                     IE.l=t.-t._-l.
+The cardinality of E is, therefore,
+                               m
+
+                        IEI-         IE,
+                               i=1
+                                                                m--1
+                               t,     t,_          1       A+          (ti+x        ti-1)
+                                                                i=1
+
+                            =tm tin--              1       A + t. + tin-1            t
+                               2t.         1   t       A
+                        LAYING OUT GRAPHS USING QUEUES                                 937
+
+                                   2IV[- 1 -[V[- A
+
+    Thus the greatest number of edges that can be assigned to a single queue is 2IV[     3.
+This value immediately yields a lower bound on the queuenumber of a graph.
+    CO OLL Y 3.7. QN( ) > [IEI/(2IVI 3) 3.
+     3.2. Recognizing 1-queue graphs. The 1-stack graphs are exactly the outerplanar
+graphs and, therefore, can be recognized in linear time (Syslo and Iri [25]). In contrast,
+we show that the problem of recognizing 1-queue graphs is NP-complete (see Garey
+and Johnson [9]). Formally, the recognition problem for 1-queue graphs is the following
+decision problem.
+     ARCHED LEVELED-PLANAR.
+     Instance. A graph G (V, E), represented by adjacency lists.
+     Question. Does G have an arched leveled-planar embedding?
+     Rather than prove the NP-completeness of ARCHED LEVELED-PLANAR di-
+rectly, we introduce a seemingly simpler decision problem.
+     LEVELED-PLANAR.
+     Instance. A graph G (V, E), represented by adjacency lists.
+     Question. Does G have a leveled-planar embedding?
+     Notice that it is not immediate that either of these problems reduces to the other.
+Using a rather elaborate reduction, we show that LEVELED-PLANAR is NP-complete.
+At the end of the section, we indicate how the reduction should be modified to show that
+ARCHED LEVELED-PLANAR is NP-complete.
+     We now present the known NP-complete problem which, via reduction, establishes
+the NP-completeness of LEVELED-PLANAR and, thereby, of ARCHED LEVELED-
+PLANAR. An instance of 3-SAT [9] is a boolean formula in conjunctive normal form
+,
+such that each clause contains at most 3 literals. Let {vl, v2,..., v, } be the variables of
+   and let {cl, c2,..., Cm) be the clauses. Each cj is a set containing at most 3 literals,
+                                                       ,
+where each literal is either a variable v or the complement of a variable; call a clause
+containing exactly k literals a k-clause. The graph of G() (V(), E()) has vertex
+set
+
+
+
+
+                                                 -
+                       V() {cjll < j _< m} v {vll _< i _< n}
+and edge set E()      E1 LA E2, where
+                      E1    ( (cj, vi) [vi e cj or e cj},
+                                          11 < i < n- 1}
+The edges of E2 form a cycle called the ratable cycle. The graph in Fig. 3.4 represents
+the graph of the formula having clauses Cl {Vl, v-, v5 }, c2 {KS, v-, v5 }, c3 {i-, v2 },
+c4    {v2, v3, v4 }, and cs {v2, v4, -}.
+     Lichtenstein [19] shows that the following restricted version of 3-SAT is NP-complete.
+     PLANAR 3-SAT (P3SAT).
+    Instance. An instance of 3-SAT such that G() is planar.
+     Question. Is satisfiable?
+     It always suffices to consider only instances such that each clause contains either
+two or three literals. From Lemma 1 of [19], we may assume that G() has a planar
+embedding such that, for each v, all clauses containing the literal v are on one side of
+938                  LENWOOD S. HEATH AND ARNOLD L. ROSENBERG
+
+
+
+
+                             FIG. 3.4. Example of PLANAR 3-SAT.
+
+the variable cycle, and all clauses containing the literal are on the other side. Call this
+property of the planar embedding of G(b) consistency. The planar embedding of Fig. 3.4
+is consistent.
+     While LEVELED-PLANAR is as simple a recognition problem as we could formu-
+late for queue layouts, we show that it is NP-complete in the next theorem. The proof
+is a long reduction from P3SAT to LEVELED-PLANAR. At the end of the subsection,
+the NP-completeness of ARCHED LEVELED-PLANAR is resolved by a slight modi-
+fication of this reduction.
+     THEOREM 3.8. LEVELED-PLANAR is NP-complete.
+     Proof. We reduce P3SAT to LEVELED-PLANAR. As LEVELED-PLANAR is
+easily in NP, this suffices to prove the theorem.
+     Let V {vl,..., v,} and C’ {cl,..., c,} be an instance of P3SAT. Fix a planar
+embedding of G(b) that is consistent. We will construct an instance H of LEVELED-
+PLANAR, which is a biconnected planar graph.
+     Here is an overview of our reduction strategy. We start with a consistent planar
+embedding of G(b) in which the vertices in the variable cycle are in order on a vertical
+line (e.g., as in Fig. 3.4). Our strategy is to replace all vertices and edges in G(b) by
+gadgets that have restricted leveled-planar embeddings. The graph H resulting from
+these replacements is "rigid" in the sense that in any leveled-planar embedding of H the
+relative levels of any two clause gadgets are fixed. A variable gadget has the flexibility
+of being in one of two different levels to represent true and false values of the variable.
+The gadget for an edge (called a rod) is "rigid" in the sense that the number of levels
+between its two ends is constant. Rods are used both to make H rigid and to transmit
+the truth value of a variable from the variable gadget to the gadgets of the clauses that
+use the variable.
+      As an example, consider Fig. 3.5, the rigid version of the graph from Fig. 3.4. New
+vertices uo,  ,   u5 have been interspersed among v,      , vs. New vertices c0 and c6 have
+ also been added as dummy clauses. All vertices and edges in Fig. 3.5 represent gadgets
+used in the construction of H. The construction is such that the subgraph represented
+                         LAYING OUT GRAPHS USING QUEUES                                  939
+
+by the cycle Co, uo, c6, us, co is a fixed framework that has essentially only one leveled-
+planar embedding (assuming the co gadget occupies earlier levels than the c6 gadget).
+The subgraphs representing u0,..., u5 must all appear in the same 3 adjacent levels.
+The subgraphs representing variables v,..., v5 have the freedomto be in 2 different
+positions in a leveled-planar embedding depending on their truth values. The edges that
+go generally left to right are replaced by rods of appropriate lengths. This is done in a
+way that fixes the levels occupied by the gadget of any clause. The clause gadgets have
+the ability to evaluate a boolean OR, in the sense that any clause gadget can successfully
+be placed in a leveled-planar layout if and only if at least one of its corresponding literals
+is assigned true. H has the property that it has a leveled-planar embedding if and only
+if b has a satisfying assignment. The truth values in a truth assignment for 4 specify a
+leveled-planar embedding for the variable cycle that can be extended to a leveled-planar
+embedding for H in the case that the assignment is a satisfying assignment.
+
+
+
+
+                                 FIG. 3.5. Rigid PLANAR 3-SAT.
+
+     We begin the proof with some useful building blocks. Consider the copy of K2,a in
+Fig. 3.6. Suppose this copy is in a leveled-planar embedding. Then a and a2 are exactly
+two levels apart, and b, b2, and b3 are all on the level in between. Further, only two
+of b, b2, and ba can have any additional edges incident to them. In a leveled-planar
+embedding, the leveling of any copy of K2,a is forced. If b, b2, and ba are thought of as
+a single vertex, then K2,a is thought of as a path of length 2. In a leveled embedding,
+K2,a differs from a path of length 2 in the sense that it cannot "bend" in the middle in
+order to bring the ends together; its two endpoints must appear two levels apart. We
+think of K2,a as a rigid path of length 2. By joining k 1 copies of K2, in the manner
+illustrated in Fig. 3.7 for k 3, rigid paths of any length k can be obtained. In general,
+we call a rigid path of length k a k-rod. (A 1-rod is an edge.) We draw a k-rod as a thick
+hollow line with intermediate vertices as needed (Fig. 3.8). Note that what appears to
+940                   LENWOOD S. HEATH AND ARNOLD L. ROSENBERG
+
+be a single intermediate vertex is actually two different vertices, one on the top and one
+on the bottom of the rod (the third vertex is inaccessible, hence ignored).
+
+
+
+
+                                         FIG. 3.6. A 2-rod.
+
+
+
+
+                                         FIG. 3.7. A 3-rod.
+
+
+
+
+                             FIG. 3.8. Representation of a k-rod, k   4.
+
+     A second building block is called a semi-rod. It consists of a 3-rod and a 2-rod con-
+nected by 2 edges. See Figs. 3.9 and 3.10. A semi-rod has one degree of flexibility that
+a 5-rod does not have: if z is in level t and y in level t 1, then z is either in level t 5
+(Fig. 3.9, where the semi-rod is extended to its greatest length) or t 3 (Fig. 3.10, where
+the semi-rod is compressed); note that z is always at a lower level than y. We draw a
+semirod as a 5-rod with a textured interior (Fig. 3.11).
+     In the construction of H, some vertices will be called fixed. If z is a fixed vertex, we
+intend that, in any leveled-planar embedding of H, the level containing z is always the
+same (given that a particular vertex, to be specified later, is on the first level). The level
+in which z should appear is its preferred level E(z). If we fix the two ends of a rod, then
+the intermediate vertices of the rod are also fixed, with preferred levels derived in the
+obvious way. During the construction, we designate certain vertices z as fixed and give
+LAYING OUT GRAPHS USING QUEUES                 941
+
+
+
+
+        FIG. 3.9. A semi-rod extended.
+
+
+
+
+      FIG. 3.10. A semi-rod compressed.
+
+
+
+
+    FIG. 3.11. Representation of a semi-rod.
+942                   LENWOOD S. HEATH AND ARNOLD L. ROSENBERG
+
+a value to (z). We show later that there is a leveled-planar embedding of H if and only
+if there is such an embedding where each fixed z indeed appears on level Z(z).
+     To begin the construction for formula b, we represent each variable vi by a 2-rod
+VROD[i] having left and right endpoints S[i] and T[i]. (In other words, think of S[i] ap-
+pearing in an earlier level than T[i].) Represent the edge (vi, vi+l) of G(b), 1 < i < n- 1,
+by a 2-rod EROD[i] having left endpoint V[i] and right endpoint W[i], as shown in Fig.
+3.12. Partially represent the edge (v,, vl) by a 2-rod EROD[O] connected to VROD[1]
+and by a 2-rod EROD[n] connected to VROD[n] (the representation of the edge will
+be completed later). Call the graph constructed so far P. P may be thought of as a path
+of thickness 3 from EROD[O] to EROD[n]. The vertices of each EROD are fixed, and
+the vertices of each VROD are not fixed. Note that, in any leveled-planar embedding
+containing P, the levels of T[i] and of W[i] differ by exactly one level. Further, if W[0] is
+to the right of V[0], then each W[i] is to the right of V[i], and vice versa. By symmetry, we
+may assume that any leveled-planar embedding of P has each W[i] to the right of V[i],
+and, therefore, each (V[i]) =/(W[i]) 2, 0 < < n. The intention of the construc-
+tion (not yet realized) is that all W[i]’s appear on the same level, namely, A Z(W[0]).
+For the time being, we use the level A as a relative reference for other/ values. Call the
+property of all W[i]’s appearing on level A line up.
+
+                       S[i]                         T[i]
+
+
+
+
+                              v[]                                            w[]
+
+
+
+
+                     S[i+l]                       T[i+l]
+                                FIG. 3.12. Representing the variable path.
+
+      Because the embedding of G(b) is planar, the variable cycle partitions the clause set
+C into two subsets, C and C2, in such a way that the clauses in Ct nest and the clauses in
+C2 nest. We will place the clauses in C to the left of P and the clauses in C to the right.
+(In Fig. 3.4, C {cl, c} and C {c3, c4, c5}. Clause c is nested under clause c, and
+clause ca is nested under clause c5.) A clause cj E C2 is associated with the 2 or 3 T[i]’s
+that correspond to its variables. (Similarly, a clause in C1 is associated with 2 or 3 S[i]’s.)
+Because the embedding of G(b) is consistent, each T[i] can be associated consistently
+with either vi or vS (the corresponding S[i] is associated with the complementary literal).
+If the W[i]’s line up (on level A), then each T[i] appears either on level A + 1 or A 1.
+If T[i] is on level A 1, then we say that T[i] is intruded and S[i] is extruded; otherwise
+(i.e., T[i] is on level A + 1), T[i] is extruded and S[i] is intruded. We interpret the literal
+associated with each T[i] (or S[i]) as true or false, respectively, according as whether T[i]
+(or S[i]) is intruded or not.
+    We need gadgets for each clause in C. By mirror-image symmetry in P, we consider
+only clauses in C and place their gadgets to the right of P. Construct the gadgets for
+the clauses in C in any order that obeys the nesting of clauses, taking the more deeply
+                         LAYING OUT GRAPHS USING QUEUES                                    943
+
+nested clauses earlier. (In Fig. 3.4, construct the gadget for ca before the gadget for
+c5; the gadget for ca is unconstrained.) Figure 3.13 shows the gadget for a clause. The
+gadget contains two semirods that share an edge. U[j], X[j], and Y[j] (among others)
+are fixed vertices. X[j] and Y[j] must appear in the same level, which is 4 levels before
+the level of U[j]. Q[j, 1], Q[j, 2], and Q[j, 3] are connected to the literals in the clause by
+rods. They may be either 3 or 5 levels before U[j], depending on the truth value of the
+corresponding literal.
+
+
+
+
+                         Q[I,1]
+
+
+
+
+                         Q[I,2]
+
+
+
+
+                         011,31
+
+
+
+                                  FIG. 3.13. The gadget for a 3-clause.
+
+    We first assume that cy C2 is a 3-clause. Let cy be associated with T[i], T[i2],
+and T[i3] in order from top to bottom. By the construction regimen, the gadgets for any
+clauses nested inside cy have already been constructed. The gadget for each c C2 con-
+tains a fixed vertex U[s] that is visible on the right side of the gadget. If no clauses nest
+under cy, then/:(U[j]) A+6. If there are one or more clauses nested under cy, let c be
+one that maximizes Z;(U[s]). Put/2(U[j]) =/2(U[s])+6. Let k L;(U[j])-A-4. Place a
+k-rod on each of T[i], T[i2], T[i3], and connect them to Q[j, 1], Q[j, 2], Q[j, 3], as shown
+by the k-rods on the left in Fig. 3.13. Q[j, a] is intruded (extruded) exactly when T[ia] is
+intruded (extruded). X[j] and Y[j] are fixed with L:(X[j])          L:(Y[j]) /::(U[j]) 4.
+There will be U[s]’s or W[i]’s visible under X[j] (or Y[j]). Connect a rod of the appro-
+priate length from X[j] (or Y[j]) to each visible U[s] and W[i]. For example, between
+X[j] and U[s], connect a (L:(X[j]) L:(V[s]))’rod.
+     In the case that cj is a 2-clause, the gadget is the same. There are only two vertices,
+T[il] and T[i2], associated with cj. Connect T[il] to Q[j, 1] and T[i2] to Q[j, 3] with rods
+as before. There will be at least one fixed vertex visible under X[j], Y[j], and Q[j, 2]
+(that is, some U[s] or W[i]). Connect rods of appropriate lengths between one such
+944                  LENWOOD S. HEATH AND ARNOLD L. ROSENBERG
+
+fixed vertex and X[j], Y[j], and Q[j, 2], so that Q[j, 2] is always extruded. Then cj is
+represented by the gadget in the same manner as a 3-clause in which the second literal
+is always false. This allows us to treat every clause as though it were a 3-clause.
+     Once gadgets have been constructed for each clause to the right of P, cap the right
+end of H with a path around the right end, in the following sense. Let c8 E C2 have
+maximum level (U[s]). (If C            0, by abuse of notation, take (U[s])         A.) Let
+k (U[s]) A + 3. Place a k-rod at each of W[0] and W[n]; identify their free ends
+(Fig. 3.14). Notice that two edges, one from each rod, are also identified as the edge
+(X[m + 1], Z[right]). X[m + 1] is a fixed vertex with E(X[m + 1]) A + k- 1. Some
+U[s]’s or W[i]’s will be visible from X[m + 1]. Connect X[m + 1] to each of them with a
+rod of appropriate length. The cap around the right end may be thought of as a dummy
+clause containing no literals whose purpose is to provide a rod for any U[s]’s and W[i]’s
+that have yet to be connected to a rod.
+
+                                 v[o]                       w[o]
+
+
+
+         Z[left]                                                          Z[right]
+                         x[o]                                    X[m+l]
+
+
+
+
+                                 V[n]                       W[n]
+                            FIG. 3.14. Capping the left and right ends.
+
+    After the gadgets for the clauses to the left of P are constructed, cap the left end by
+two rods from V[0] to X[0] and from V[n] to X[0] in a manner similar to the preceding
+paragraph. This completes the construction of H.
+     So far, all the/: values have been relative to A I:(W[0]). Now fix (Z[left]) 1,
+so that
+
+                             A     C(W[0]) C(Z[Z yt])+
+Remaining Z: values are adjusted according to the value of A.
+     Clearly, the construction can be accomplished in polynomial time. Also, H is a
+planar graph with a planar embedding that is essentially unique except for some incon-
+sequential freedom in embedding the intermediate vertices in k-rods.
+     Every V[i], W[i], and U[j] in H has a rod connecting it to either an X[j] or a Y[j].
+If H has a leveled-planar embedding, then it has a leveled-planar embedding in which
+(1) Z[left] is in level 1; (2) every vertex in the capping cycle
+       Z[left],..., V[0],..., W[0],..., Z[right],..., Win],..., V[n],..., Z[left]
+is in its preferred level; (3) W[0] is above W[n] in level A. Because the capping cycle
+has only one leveled-planar embedding satisfying these constraints, all other vertices are
+                         LAYING OUT GRAPHS USING QUEUES                                  945
+
+forced to be inside the capping cycle. In such an embedding, we want each fixed vertex
+to be in its preferred level. We show in the following two claims that this must be the
+case. In Claim 1, we assume that, for a particular clause cj E C2, U[j] is in level t, X[j]
+and YL’] are in level t 4, the rod connected to U[j] goes right, and the rods connected
+to Q[j, 1], X[j], Q[j, 2], r[j], Q[j, a] go left.
+     CLAIM 1. The gadget for cj has such a leveled-planar embedding if and only if at
+least one of QIi, 1], Q[i, 2], Q[i, 3] is intruded.
+     Proof. If Q[j, 1], Q[j, 2], and Q[j, 3] are all intruded, Fig. 3.13 shows such an em-
+bedding. If only Q[j, 2] is intruded, Fig. 3.15 shows such an embedding. If only Q[j, 1]
+(or, by symmetry, only Q[j, 3]) is intruded, Fig. 3.16 shows such an embedding. If two
+of Q[j, 11, Q J, 2], and Q[j, 3] are intruded, moving an appropriate Q J, a] in one of these
+figures easily gives an embedding. From these three figures, it is clear that there is no
+leveled-planar embedding of the gadget if all three vertices Q[j, 1], Q[j, 2], and Q[j, 3] are
+extruded.
+
+                                          Q[I,1]
+
+
+
+
+                        O[I,2]
+
+
+
+
+                                          O[I,3]
+
+
+                                    FIG. 3.15. Q[j, 2] intruded.
+
+    CLAIM 2. If H has a leveled-planar embedding such that each vertex in the capped
+cycle is in its preferred level, then each fixed vertex of H is in its preferred level.
+    Proof. Say that there is a fixed vertex not in its preferred level. If there is such a
+vertex in an EROD, let i be a smallest index for which EROD[i] contains such a vertex.
+By left-right symmetry, it suffices to consider the case that W[i] is in a level t > A.
+Because i is minimum, t A + 2. W[i] is connected by a rod to either an X[j] or a Y[j].
+Without loss of generality, say that the rod is to X[j]. The rod forces X[j] to be in level
+(X[j]) / 2 (U[j]) 2. We claim that U[j] is in a level higher than (U[j]).
+     Suppose U[j] is in level (U[j]). The semi-rod to Q[j, 1] forces Q[j, 1] to be in level
+(U[j]) 3. (Otherwise, W[i] could not be in level A / 2.) The rods of X[j] and Q[j, 1]
+946                   LENWOOD S. HEATH AND ARNOLD L. ROSENBERG
+
+
+
+
+                        011,11
+
+
+
+
+                                       Q[I
+
+
+
+
+                                          Q[I,3I
+
+
+                                   FIG. 3.16. Q[j, 1] intruded.
+
+
+force Q[j, 1] to be above X[j]. Therefore, it is not possible to embed the paths from
+Q[j, 1] to U[j] properly in levels.
+     We conclude that U[j] is in level > I(U[j]) + 2. The above argument repeats with
+the rod from U[j] connecting to some X[j’] or Y[j’], shifting U[j’] to a level higher than
+(U[j’]). Repetition of the argument ends at X[m + 1], which must be in level (X[m +
+1]), not higher. This contradiction proves that each W[i] is in level A.
+     A similar argument shows that any fixed vertex that is not a W[i] must also be in its
+preferred level.
+     We need to show that b is satisfiable if and only if H has a leveled-planar embedding.
+     Assume that b is satisfiable. Choose a satisfying assignment for b. Embed P first.
+Place all fixed vertices of P on their assigned levels. If vi is true, let whichever of S[i]
+and T[i] corresponds to the literal vi be intruded. If vi is false, let whichever of S[i] and
+T[i] corresponds to the literal be intruded. Then each u[j] has at least one intruded
+Q[i, j] and can be level embedded by Claim 1. Thus H has a leveled-planar embedding.
+     Now assume that H has a leveled-planar embedding. By Claim 2, we may assume
+that each fixed vertex F is on level Z(F). Let Z[i] be whichever of S[i] and T[i] corre-
+sponds to the literal vi. If Z[i] is intruded, assign vi the value true; otherwise, assign
+the value false. By Claim 1, every U[j] has an intruded Q[i, j]. Therefore, each clause
+c contains a literal that is true under this assignment. This truth assignment satisfies
+that is, b is satisfiable.
+     Thus P3SAT reduces to LEVELED-PLANAR. As P3SAT is NP-complete, we con-
+clude that LEVELED-PLANAR is NP-complete.
+      It appears that the graph H is arched leveled-planar if and only if it is leveled-planar.
+To be certain of this, we modify the construction slightly by adding an arched cap on the
+left and right ends of H. The cap on the right end is shown in Fig. 3.17. The rightmost
+                         LAYING OUT GRAPHS USING QUEUES                                      947
+
+edge of the right cap and the leftmost edge of the left cap must be arches, and no other
+edges may be arches. With this change to H, H is an arched leveled-planar graph if and
+only if is satisfiable. This proves the following corollary.
+
+
+
+
+                              X[m+l]                       Z[right]
+
+
+
+
+                                     FIG. 3.17. An arched cap.
+
+    COROLLARY 3.9. ARCHED LEVELED-PLANAR is NP-complete. Thus, the prob-
+lem of recognizing 1-queue graphs is NP-complete.
+    4. Layouts for specific graphs. In this section, we present queue layouts having
+small queuenumber for a variety of specific families of graphs. We make contrasts with
+the corresponding stack layouts. The intuition that an easily leveled graph has a good
+queue layout is supported by most of these families. Some details are left to the reader.
+    4.1. Trees and meshes. We begin with trees and meshes, two natural leveled-planar
+families of graphs.
+    A tree T is a connected graph that has no cycles. Choose an arbitrary vertex r to
+be the root of T. Each vertex in T has a well-defined depth, i.e., distance from r. Let
+DEPTH(i), i >_ 0, consist of all vertices at depth i.
+    PROPOSITION 4.1. Every tree T is a leveled-planar, hence 1-queue, graph. T has a 1-
+queue layout such that the first level is {r } and the queuewidth of the layout is the cardinality
+ofthe largest DEPTH(i), i > 0.
+    Proof. Lay T out breadth-first starting from the root r. The result is a 1-queue layout
+of the tree with the stated properties.          [3
+    An m n mesh is a graph with vertices
+                                 {vj 1 < < m, 1 <j < n}
+and edges
+
+              {(vii, vi,j+l) ll <_ j <_ n- 1} W {(v/j, Vi+l,j) 1 _< i < m 1}.
+    PROPOSITION 4.2. An m x n mesh is a leveled-planar, hence 1-queue, graph. There is
+a 1-queue layout QL ofthe mesh having queuewidth QW(QL) < min{m, n}.
+948                      LENWOOD S. HEATH AND ARNOLD L. ROSENBERG
+
+
+                                                     ,
+     Proof. An rn x n mesh has a natural embedding in the plane with vertices in m rows
+and n columns. If this embedding is rotated 45 vertices line up on m + n 1 vertical
+lines. The result is a leveled-planar embedding with the stated queuewidth.
+     For m > 2, n > 2, an m n mesh is not an outerplanar graph and, in fact, has
+stacknumber 2 [5]. Thus, the mesh provides an example of a 1-queue graph that fails to
+be a 1-stack graph.
+     4.2. Unicyclic graphs. A unicyclic graph is an undirected graph in which each con-
+nected component contains at most one cycle. The family of unicyclic graphs includes
+trees, forests, and cycles of all lengths.
+     PROPOSITION 4.3. A unicyclic graph is an arched leveled-planar, hence 1-queue, graph.
+Each connected component contributes at most one arch.
+     Proof. Let G (V, E) be a unicyclic graph. We may assume that G is connected. By
+Proposition 4.1, we need only treat the case that G contains a cycle. Let
+
+
+
+
+                                                                        -
+                                    C    Ul z/,2
+
+bc that cycle. If k is even, level C into   + 1 levels
+
+a leveled-planar embedding of C results. If k is odd, level C into          levels
+
+  U1      {1, lzk}, U2    {u2, Ztk-1},’’’, Vi      {ui, k-i+l},""", V(k+l)/2
+an arched leveled-planar embedding of C results, with the single arch (Ul, uk).
+     Let G be G without the edges of C. G contains one connected component for each
+ui; this connected component is a tree Ti, which we root at ui. We convert the (arched)
+leveled-planar embedding of C into one for G by expanding Ti from ui in a breadth-first
+manner, as prescribed in Proposition 4.1.
+       4.3. X-trees. The depth-d complete binary tree CBT(d) has vertex set
+
+                                      {1,2,...,2 d+- 1}
+and edge set
+
+                            {(a, 2a), (c, 2a + 1) 11 _< a _< 2 a- 1}.
+The root of CBT(d) is 1, and CBT(d) has d + 1 levels in the leveling starting at the root.
+The depth-d X-tree X (d) is the supergraph of CBT(d) that has edges added across each
+of the levels from left to right. See Fig. 4.1.
+     Every X(d) is a 2-stack graph; when d < 2, X(d) is a 1-stack graph [5]. In contrast,
+even small X-trees require two queues.
+     PROPOSITION 4.4. For d > 1, X (d) admits a 2-queue layout with queuewidths 2 d and
+1. For d > 2, X d) is not a 1-queue graph.
+    Proof. For the upper bound, choose the order a 1, 2,..-, 2 d+l 1. The edges
+of CBT(d) are assigned to one queue and the edges across each level are assigned to a
+second queue.
+     For the lower bound, since X(2) is a subgraph of X(d), d _> 2, it suffices to show
+that X (2) is not a 1-queue graph.
+                        LAYING OUT GRAPHS USING QUEUES                                   949
+
+
+
+
+                                      FIG. 4.1. X-tree X(3).
+
+
+    We exploit an alternate means of constructing X(2). Given any graph G and any
+edge (z, y) in G, define the operation of hatting (z, y) as adding a new vertex (thepeak)
+z and new edges (z, z) and (y, z). Start with a cycle of length 4:
+
+                                  C      Ul ?2 u3 ?4 Ul.
+
+Choose any three of the four edges of C. Hat each of the chosen edges. The resulting
+graph is isomorphic to X (2).
+     To obtain a contradiction, suppose that X(2) has a 1-queue layout. Let a be the
+order of the vertices. Without loss of generality, assume that ul is the leftmost vertex of
+C in a. Neither u nor u4 can be the rightmost vertex of C in a, for then two edges of
+C would nest. By symmetry we may assume that the order of the vertices of C in a is
+ul, u2, u4, u3. Three of the four edges of C must be hatted. In particular, either ul or
+ua has both of its incident edges hatted. By symmetry, we may assume that (u, u4) and
+(Ul, U2) are hatted. Let w be the peak of (Ul, U4).
+     There are five possible placements of w within the order u, u, u4, u3. Only place-
+ment of w between u and u fails to yield two nested edges. But, with w between u and
+u, there is no placement of the peak of (Ul, u) that does not yield two nested edges.
+This is a contradiction to a giving a 1-queue layout of X(2).
+     Since X(2) is outerplanar, we have the following corollary.
+     COROLLARY 4.5. X (2) is a 1-stack graph that is not a 1-queue graph.
+    4.4. DeBruijn graphs. The order-d deBruijn graph DB(d) has vertex set
+
+                                      {0, 1,...,2 a- 1}
+                                                                                  a.
+and edges connecting each vertex z with vertices 2z mod 2 a and 2z + 1 mod 2 See Fig.
+4.2. Note that multiple edges and loops are discarded.
+     PROPOSITION 4.6. DB(d) admits a 2-queue layout with queuewidths 2         a-x. DB(d),
+d >_ 4, does not admit a 1-queue layout. DB (3) does admit a 1-queue layout.
+     Proof. The edges of DB(d) of the forms (x, 2x) and (x, 2x + 1), x {1, 2,..., 2 d-1
+1}, are the edges of a depth-(d- 1) complete binary tree rooted at vertex 1 and containing
+all vertices except O. Similarly, the edges of the forms (2 a- +x, 2z) and (2 a- +x, 2x + 1 ),
+x {0, 1,..., 2 a-1 2}, are the edges of a depth-(d 1) complete binary tree rooted
+at vertex 2 a-     2 and containing all vertices except 2 a-1 1. Choose the order a
+       ,   a
+O, 1,. 2 1. Assign edges of the forms (x, 2x) and (x, 2x + 1) to one queue and edges
+of the forms (2 a- + x, 2z) and (2 a-1 + x, 2z + 1) to a second queue. (When edges are
+assigned to both queues, break ties arbitrarily.)
+950                     LENWOOD S. HEATH AND ARNOLD L. ROSENBERG
+
+
+
+
+                               FIG. 4.2. The deBmijn graph D B (3).
+
+
+      D B(d), d > 4, is not planar, hence not a 1-queue graph. The order
+                                    a    1, 0, 2, 3, 4, 5, 7, 6
+yields a 1-queue layout of DB(3).
+     4.5. Complete graphs. The complete graph K, has a vertex set of size n and an edge
+connecting every pair of vertices.
+     PROPOSITION 4.7. QN(K,)=
+     Proof. Every vertex order for K, is symmetric, so fix any order a 1, 2,..., n. The
+maximum size of a set of nesting edges is exactly In/2J. By Proposition 2.1 and Theorem
+2.3, the result follows.
+     An explicit assignment of edges of K, to queues is easily described. In the fixed
+order a, every edge (i, j) has length li Jl- There are edges of every length from 1 to
+n 1. For i E {1, 2,..., [n/2J }, assign all edges of lengths 2i 1 and 2i to queue qi. No
+two edges having the same length or having lengths differing by 1 can nest.
+     4.6. Complete bipartite graphs. The complete bipartite graph K,,, has m + n ver-
+tices, partitioned into two sets:
+                            {a, a2,..., am } t2 { bl, b2,         bn };
+its edges connect every a vertex with every b vertex.
+     PROPOSITION 4.8. QN(Km,n) min([m/2], n/2]).
+     Proof. Without loss of generality, assume that m < n. We need to show that
+                                    QN(K,,,)          [m/2].
+      Upper bound. Choose the layout order
+                   O"    41,42,-.., a[m/2q, b,       , bn, a[m/2+l,’’’, am.
+Partition the edges of K,,n into [m/2] sets, each of which will be assigned to a dis-
+tinct queue. The ith set, 1 < i < [m/2], comprises all edges of the form (ai, by) and
+(a,+1_, bj), for 1 < j < n. Since none of the edges in the ith set nest, they can all be
+assigned to a single queue, whence [m/2] queues suffice.
+     Lower bound. Let a be an order of the vertices in a QN(Km,,)-queue layout of
+Km,. By symmetry, we may assume that the ai’s appear in the order 41,42,..., a, in a
+and that the bj’s appear in the order bn, b_     ,...,
+                                                bl in a. Because we may reverse a and
+                        LAYING OUT GRAPHS USING QUEUES                                   951
+
+still have a QN(K,,i)-queue layout, we may assume that br,.,.,/: appears after ar,.,,./: in
+or. Then the set of edges
+
+                                 {(o,, b) Il < i < rm/:-I}
+nest. By Proposition 2.1, QN(K,,,) > [m/2].
+     This straightforward determination of QN(K,,,) contrasts with the current status
+of SN (K,,,) as reported in [20]. Even after much effort, the exact stacknumber of
+or even of K,,,, has not been determined, though Muder, Weaver, and West [20] have
+obtained nontrivial bounds.
+     4.7. FFT and Benel networks. We now consider two related families of graphs that
+have importance as computational networks. The FFT network represents the data de-
+pendencies of the Fast Fourier Transform algorithm. The Beneg rearrangeable permuta-
+tion network is a switching network capable of realizing at its n outputs any permutation
+of its n inputs (Benel [1]).
+     The n-input Bene network B(n), n 2 ", is defined inductively as follows.
+     1. B(2) is the complete bipartite graph K2, on the two input vertices I[1, 1] and
+I[1, 2] and the two output vertices O[1, 1] and O[1, 2].
+     2. B(n) is obtained from two copies of B(nl2), together with n new input vertices
+                                                                              .,
+I[m, 1], I[m, 2],..., I[m, n] and n new output vertices O[m, 1], O[m, 2],. O[m, hi. In
+the second copy of B(n/2), each vertex l[k, i] is relabeled I[k, i + n/2], and each vertex
+O[k, i] is relabeled O[k, i + n/2]; all vertices then have distinct labels. For 1 < i < n, add
+edges to create a copy of Kz,z on vertices I[m, i] and I[m, i +n/2] and vertices I[m- 1, i]
+and I[m- 1, i + n/2]; also, add edges to create a copy of K2,z on vertices O[m, i] and
+O[m, i + hi2] and vertices O[m 1, i] and O[m 1, i + n/2].
+     As shown in Fig. 4.3, the Benel network has a natural level structure with 2m levels.
+The n-input FFT network is the graph consisting of the first m + 1 levels of B(n).
+
+
+
+
+                                FIG. 4.3. The Beneg network B (4).
+
+    As B(n), n > 2, is not planar, its queuenumber is at least 2. The level structure (of
+either network) provides a straightforward 3-queue layout: order the vertices level by
+952                   LENWOOD S. HEATH AND ARNOLD L. ROSENBERG
+
+level, going up each level; one queue for the "cross" edges, one queue for the "upward"
+edges, and one queue for the "downward" edges suffices. A more complicated 2-queue
+layout of B(n) is due to Reibman [23].
+     PROPOSITION 4.9 (see [23]). The Beneg network B(n) admits a 2-queue layout with
+each queue of width r The layout is optimal in queuenumber and within a factor of 2 of
+optimal in queuewidth.
+     Proof. The layout of B(n) follows its inductive definition. The inductive hypothesis
+is that B(n) has a 2-queue layout which respects the leveling of B(n); that is, all level
+i vertices appear before any level i / 1 vertices, though no restriction is placed on the
+relative order of vertices within each level.
+     1. The vertex order for/3(2) is I[1, 1], I[1, 2], O[1, 1], O[1, 2]. The two edges incident
+to I[1, 1] are assigned to one queue and the two edges incident to I[1, 2] are assigned to
+the second queue. The layout satisfies the inductive hypothesis.
+     2. We assume that B(n/2) has a 2-queue layout satisfying the inductive hypothesis.
+Let B1 and B2 be two copies of/3(n/2). Lay each out in the 2-queue order that is
+guaranteed by the induction. Merge the two layouts level by level so that the level-/
+vertices of/32 always appear immediately to the right of the level-/vertices of B1. In
+particular, I[k, i + n/2] (respectively, O[k, i + n/2]) is always n/2 vertices to the right of
+I[k, i] (respectively, of O[k, i]). Because the leveling of B(n) is honored in the layout,
+each level-/edge of B1 crosses every level-/edge of B2, and vice versa, so no nesting
+results from the merging; hence, a 2-queue layout of the "sum" of B1 and B2 results.
+Add n new input vertices to the left and n new output vertices to the right of the entire
+layout. View the n new inputs as consisting of n/2 consecutive pairs of vertices. Add
+edges from the first pair to the first vertices of Bx and Bz to form a copy of K,z. In
+general, add edges from the ith pair to the ith vertices of B1 and B2. Assign the added
+edges incident to B1 (which form a twist) to the first queue and the added edges incident
+to Bz (which also form a twist) to the second queue. Similarly, connect the n new outputs
+to the last vertices of B1 and B2. The result is a 2-queue layout of B(n).
+     Because the FFT network is a subgraph of the Bene network, it also has a 2-queue
+layout. This compares favorably with the stacknumber optimal 3-stack layouts of the
+Bene and FFT networks in Games [8]. The natural leveling of these networks is a defi-
+nite advantage in constructing queue layouts that are good, at least in the sense of queue-
+number.
+      4.8. l-lypercube. The d-dimensional hypercube Q(d) has vertex set {0, 1}a, the set of
+all bit strings of length d; its edges connect every pair of vertices that differ in exactly one
+bit position. View the vertex set of Q(d) as the set of integers {0, 1,..., 2 a 1} by iden-
+tifying a d-bit string with the corresponding integer in binary notation. The hypercube
+admits a very regular layout strategy.
+      PROPOSITION 4.10. For d > 2, Q(d) admits a (d 1)-queue layout with queuewidths
+
+                                    2d-1 2d-2,... 2 2 21
+    Proof. We lay out Q(d) inductively. The order a 0, 1, 2, 3 gives a 1-queue layout
+of Q(2) with queuewidth 2. To obtain a layout for Q(d), d > 2, inductively lay out two
+adjacent copies of Q(d- 1), similarly ordered. By induction, each of the copies of Q(d- 1)
+uses d 2 queues with queuewidths
+                                    2d-2 2d-3 I**    2 2 21
+                         LAYING OUT GRAPHS USING QUEUES                              953
+
+hence, their disjoint sum does also. The 2 a-1 edges connecting one copy of Q(d 1)
+to the other form a 2a-l-twist; hence they require only one additional queue of width
+2 d-1.
+       The queuenumber of the preceding layout is optimal to within a constant factor.
+       PROPOSITION 4.11. QN(Q(d)) f(d).
+       Proofi Q(d) has d2 d-1 edges. By Corollary 3.7, therefore,
+                                          d2 a-1
+                      QN(Q(d)) >_ 24+1_3           ]
+                                               fl(d).
+       5. Queuenumber and graph structure. We now explore two structural properties
+of graphs that provide bounds on queuenumber. These properties are bandwidth and
+separator size.
+    5.1. Bandwidth. Let a        1, 2,..., n be any order of the vertices of G. The band-
+width of a is the length of the longest edge; that is,
+                                  BW(a)         max li- Jl.
+                                               (,.i)eE
+The bandwidth of G is the minimum bandwidth of any a; that is,
+                                   BW(G)        minBW(a).
+Assume that n > B + 1. The maximal bandwidth-B graph on n vertices M(B, n) has
+vertex-set { 1, 2,  ,
+                   n}; its edges form a copy of the complete graph KB+I on each subset
+of vertices
+                           {i,i+l,...,i+B},            l<_i<_n-B.
+See Fig. 5.1.
+
+
+
+
+                           FIG. 5.1. Maximal bandwidth-B graph M(3, 8).
+
+    The following theorem establishes a relationship between bandwidth and queue-
+number.
+    THEOREM 5.1. QN(M(B, n))         VB/2]. Hence, if BW(G) B, then QN(G) <
+       Proof.
+    Upper bound. Choose the order a 1, 2,..., n for the vertices of M(B, n). There
+are edges of every length from 1 to/3. Assign all edges of lengths 2i 1, 2i, 1 < i <
+[B/2], to queue qi. No two edges having the same length or having lengths differing by
+1 can nest. A /3/2]-queue layout of M(B, n) results.
+    Lower bound. M(/3, n) contains complete graphs on B + 1 vertices. By Proposition
+4.7,
+954                   LENWOOD S. HEATH AND ARNOLD L. ROSENBERG
+
+     Since every bandwidth-B graph G is a subgraph of some maximal bandwidth-B
+graph M(B, n), QN(G) < [B/2].              U
+     5.2. Separator size. Let S(z) be a nondecreasing integer function. A graph G
+(V, E) has a (,  1
+                   )-vertex-separator of size S(z) (or just separator of size S(x)) if either
+IVI  <  3 or if there is a subset of cardinality at most s(IVI) whose removal leaves con-
+nected components of cardinality less than or equal to IvI, each having a separator of
+size S(z).
+    Suppose G has maximum degree d and has a separator of size S(x). Let R be the
+following function of S:
+
+                               R(x)       (d + 1)   S(x/2).
+
+A bucket tree for G is a complete binary tree whose level-j buckets (vertices) have bucket
+capacity
+                                   C(j)      cdR(IVI/2Y),
+where c is a constant. Bhatt et al. [3] demonstrate the following.
+     LEMMA 5.2 (see [3]). If G (V, E) is a graph of maximum degree d that has a sepa-
+rator of size S (z), then V can be mapped onto the bucket tree for G in such a way that
+       1. At most C (j vertices are mapped to each level-j vertex of the bucket tree;
+      2. If two vertices that are adjacent in G are mapped to two distinct buckets, then these
+          two buckets are at most distance d apart in the bucket tree, and one of the buckets
+          is an ancestor of the other
+     The following relates the separator size of a graph to its queuenumber and stack-
+number.
+     THEOREM 5.3. If G (V, E) is a graph of maximum degree d that has a separator of
+size S(x), then G has queuenumber and stacknumber O(d2R([VI)).
+      Proof.
+     Queuenumber. Construct a queue layout of G in two steps. First, use Lemma 5.2 to
+map V onto the bucket tree for G, and lay out the bucket tree in a breadth-first order.
+Second, use this 1-queue layout of the bucket tree to obtain a queue layout of G; replace
+each bucket B by the contents of B placed contiguously in any order. We analyze the
+number of queues needed in this layout of G. The two endpoints of any edge of G are
+mapped to a pair of buckets B1 and B2 such that B is an ancestor of B2, and B1 and
+B2 are at most distance d apart in the bucket tree; call an edge an i-edge, 0 <_ <_ d,
+if i is the distance between B1 and B2 in the bucket tree. If the endpoints of two i-
+edges are mapped to different pairs of buckets, then the two edges cannot nest. Fix i,
+0 < i < d. Since each bucket contains O(dR(IV[)) vertices, O(dR([VI)) queues suffice
+for all/-edges. Since has d/ 1 possible values, the queue layout for G has queuenumber
+O(dR(IVl)).
+    Stacknumber. A similar construction that begins by laying out the bucket tree in
+preorder suffices to show the bound on stacknumber.
+    We remark that Theorem 4.5 of Chung, Leighton, and Rosenberg [5] gives an up-
+per bound on the stacknumber of a graph as a function of its bifurcator, rather than
+separator, size.
+    6. A queuenumber/queuewidth tradeoff. In this section, we provide evidence of an
+apparent tradeoff between queuenumber and queuewidth for queue layouts of complete
+                             LAYING OUT GRAPHS USING QUEUES                                                955
+
+binary trees. Then we relate the queuewidth of a graph G to the diameter of (7, i.e., the
+greatest distance between any pair of vertices of (7.
+     By Proposition 4.1, a depth-d complete binary tree has a 1-queue layout with queue-
+        a.
+width 2 This queuewidth is exponentially greater than the O(d) stackwidth of a 1-stack
+layout of a complete binary tree [5]. We consider the question of whether a larger num-
+ber of queues can be traded off for a smaller (cumulative) queuewidth. The following
+theorem suggests an apparent tradeoff.
+     THEOREM 6.1. A depth-d complete binary tree T with n 2 a leaves has a k-queue
+layout QL with CQW(QL) O(knl/a).
+     Proof. We give the proof for k 2. To simplify the construction, we assume that
+d
+
+             .
+      2d’ is even. Let n’ 2         ’x/. Let T* be the upper d’ + 1 levels of T, and let
+1, 2,..., n’ be the leaves of T* in canonical order. Each leaf i is the root of a subtree Ti
+of depth d Order the vertices of T* in breadth-first order from the root, so that vertices
+1,..., n’ appear rightmost in the order. For each i, 1 <_ i <_ n’, place the vertices of Ti in
+breadth-first order immediately to the right of its root i. Assign the edges of T* to one
+queue and the edges of T, T:,..., T,, to a second queue. Each queue has queuewidth
+n’ x/. The cumulative queuewidth of the 2-queue layout is 2n O(2n/u).
+     For general k, 2 < k < d, cut T every [d/k] levels, and use one queue for the edges
+in each of the produced "meta-levels." Details are left to the reader.         [3
+     To show that the apparent tradeoff is a real one, we need lower bound techniques
+for queuewidth. The next theorem provides a lower bound on queuewidth as a function
+of diameter for arbitrary 1-queue graphs.
+     THEOREM 6.2. Suppose G (V, E) is a connected 1-queue graph having diameter D.
+Let Q L be a 1-queue layout of G. Then,
+
+                                          QW(QL) _> 2DIEI 1
+                                                                +
+    Proof. By Theorem 3.2, layout QL yields an arched leveled-planar embedding of G;
+denote the induced levels by V1, V2,            ,
+                                          V,. Since each edge of G connects vertices that
+are either in the same or adjacent levels, it is immediate that D > m 1. Consider now
+the following 2m 1 < 2D / I cuts of layout QL:
+
+             CUT(t1      1), CUT(t),..., CUT(ti              1), CUT(ti),..., CUT(tm               1).
+Since every edge of G either has some ti as its right endpoint or passes over some ti, the
+enumerated set of cuts collectively exhausts E. The proof is completed by appealing to
+two facts:
+         The queuewidth of the layout QL is (clearly) as big as the biggest cut.
+         The biggest cut contains no fewer edges than the average cut.                   [3
+    For a depth-d complete binary tree T, there are n          2 a leaves,       2n 1,       IVI
+IEI    2n 2 and D 2d 2 log n. We have this corollary.
+    COROLLARY 6.3. Any 1-queue layout of a depth-d complete binary tree has queuewidth
+at least (2n     2)/(4d + 1)         ft(n/log n).
+    The breadth-first layout of T starting at the root has queuewidth n. The lower bound
+on queuewidth in the corollary is close to this upper bound. We do not know how to
+achieve this lower bound and doing so appears difficult. The higher width of queue
+
+     1CUT(i), the cut at vertex i, is the set of all edges whose left endpoint is less than or equal to and whose
+right endpoint is greater than i.
+956                   LENWOOD S. HEATH AND ARNOLD L. ROSENBERG
+
+layouts over stack layouts suggests that stack layouts of trees are preferable to queue
+layouts.
+     We do not yet have a lower bound on cumulative queuewidth for arbitrary k-queue
+layouts of T, along the lines of Theorem 6.2 for the case k 1. Thus, we do not know
+whether there is a real tradeoff between queuenumber and queuewidth here, but we con-
+jecture that there is. We further conjecture that the cumulative queuewidth announced
+in Theorem 6.1 is within a factor of O(d) of optimal.
+     7. Future directions. In Table 7.1, we summarize our queuenumber results for spe-
+cific graphs alongside the corresponding stacknumber results. Further comparison of
+the relative merits of queues and stacks is warranted. In particular, queues appear to
+be more appropriate than stacks for graphs with a leveled structure; can this insight be
+formalized? Chung, Leighton, and Rosenberg [5], and Heath [13] show that there are
+tradeoffs between stacknumber and stackwidth in the sense that, for certain graphs, de-
+voting more stacks to a layout decreases the cumulative stackwidth. We expect analogous
+tradeoffs between queuenumber and queuewidth. We conjecture the following.
+     CONJECTURE 1. There are graphs that exhibit a tradeoff between queuenumber and
+queuewidth, and Theorem 6.1 exposes such a tradeoff.
+                                          TABLE 7.1
+                                 Queuenumbers of specific graphs.
+
+                 Graph Class                    Queuenumber          Stacknumber
+
+                    Trees                              1                 1   [5]
+                   X-trees                             2                  2 [5]
+               DeBruijn Graph                          2                _< 5 [21]
+             Complete Graph Kn                     /,/1                Ln/J [5]
+        Complete Bipartite Graph Km,n        min(r /Zl,             _< F(, +
+                                                  (Exact)                  [2o]
+                FFT Network                            2                     [8]
+               Bene Network                            2                     [81
+               Boolean n-cube                       <n-1             _<n--1 [5]
+               Ternary n-cube                      <2n--2            (), < t/9
+                                                      [161               [16]
+                Planar Graphs                      Unknown              4 [27]
+                                                  (Conjecture
+                                                   bounded)
+
+    Often, good queue layouts seem easier to obtain than good stack layouts. Planar
+graphs may be an exception to this. However, in harmony with the fact that planar graphs
+can be laid out in a bounded number of stacks (Yannakakis [27]), we conjecture the
+following.
+    CONJECTURE 2. Planar graphs can be laid out in a bounded number of queues.
+    The notions of stack and queue layouts may be generalized in several directions.
+One approach is to define layouts that simultaneously utilize queues and stacks. We
+conjecture the following.
+     CONJECTURE 3. Each planar graph admits a 1-stack, 1-queue layout.
+                            LAYING OUT GRAPHS USING QUEUES                                              957
+
+    Another approach is to utilize deques or more general permutation mechanisms. In
+the realm of such generality, it becomes necessary to consider relative cost measures for
+the various mechanisms.
+    Note added in proof. The interested reader should be aware of the Ph.D. thesis of
+Sriram V. Pemmaraju (Exploring the Powers of Stacks and Queues via Graph Layouts,
+Department of Computer Science, Virginia Polytechnic Institute and State University,
+Blacksburg, VA, 1992). It contains further results in the theory of queue and stack lay-
+outs. The thesis develops a number of new tools for studying such layouts. It also initi-
+ates the study (promised in 1.2) of queue and stack layouts of dags. Copies are available
+from the first author.
+    Acknowledgments. Part of this research was conducted while the first author was at
+the University of North Carolina at Chapel Hill and at the Massachusetts Institute of
+Technology. A portion of the work of the second author was done during a visit to the
+Department of Applied Mathematics and Informatics of the University of the Saarlands.
+    We wish to thank Reuven Bar-Yehuda, Sandeep Bhatt, Fan Chung, Sergio Fogel,
+Tom Leighton, Bojana Obreni6, Sriram Pemmaraju, and Andrew Reibman for helpful
+conversations. We especially thank Bojana for a careful reading of the completed pa-
+per, for many useful suggestions, and for pointing out the construction in the proof of
+Theorem 5.3.
+
+                                              REFERENCES
+
+  [1] V. E. BENE, Optimal rearrangeable-multistage connecting networks, Bell System Technical Journal, 43
+           (1964), pp. 1641-1656.
+  [2] E BERNHART AND B. KAINEN, The book thickness ofa graph, J. Combin. Theory B, 27 (1979), pp. 320-331.
+  [3] S. N. BHAr, E R. K. CHUNG, J.-W. HONG, E T. LEIGHTON, B. OBRENI, A. L. ROSENBERG, AND E. J.
+           SCHWABE, Optimal emulations by butterfly-like networks, Tech. Rpt. 90-108, Department of Com-
+           puter Science, University of Massachusetts, Amherst, MA, 1990; J. Assoc. Comput. Mach., to ap-
+          pear.
+  [4] J. BUSS AND P. Snoa, On the pagenumber ofplanar graphs, in Proceedings of the 16th Annual ACM
+           Symposium on Theory of Computing, Washington, DC, 1984, pp. 98-100.
+  [5] E R. K. CHUNG, E T. LEIGHTON, AND A. L. ROSENBERG, Embedding graphs in books: A layoutproblem
+           with applications to VLSI design, SIAM J. Algebraic Discrete Meth., 8 (1987), pp. 33-58.
+  [6] P. ERD0S AND E. SZEKERES, A combinatorialproblem in geometry, Compositio Math., 2 (1935), pp. 463-
+          470.
+  [7] S. EVEN AND A. ITAI, Queues, stacks and graphs, in Theory of Machines and Computations, Z. Kohavi
+           and A. Paz, eds., Academic Press, New York, 1971, pp. 71-86.
+  [8] R. GAMES, Optimal book embeddings ofthe FFT, Benes, and barrel shifter networks, Algorithmica, 1 (1986),
+          pp. 233-250.
+  [9] M.R. GAREY AND D. S. JOHNSON, Computers and Intractability, W. H. Freeman, New York, 1979.
+ [10] M.R. GAREY, D. S. JOHNSOr, G. L. MILLER, AND C. H. PAPADIMITRIOU, The complexity ofcoloring circular
+           arcs and chords, SIAM J. Algebraic Discrete Meth., 1 (1980), pp. 216-227.
+ [11] L. S. HEATH, Embedding planargraphs in seven pages, in Proceedings of the 25th Annual IEEE Sympo-
+           sium on Foundations of Computer Science, Singer Island, FL, 1984, pp. 74-83.
+ [12] ., Algorithms for Embedding Graphs in Books, Ph.D. thesis, Department of Computer Science,
+           University of North Carolina, Chapel Hill, NC, 1985.
+ [13] ., Embedding outerplanar graphs in small books, SIAM J. Algebraic Discrete Meth., 8 (1987), pp.
+           198-218.
+ [14] L.S. HEATH AND S. ISTRAIL, Thepagenumberofgenus y graphs/s O(g), in Proceedings of the 19th Annual
+           ACM Symposium on Theory of Computing, New York, NY, 1987, pp. 388-397.
+ [15] ., The pagenumber ofgenus g graphs/s O(g), J. Assoc. Comput. Mach., 1992, to appear.
+ [16] L. S. HEATH, E T. LEIGHTON, AND A. L. ROSENBERG, Comparing queues and stacks as mechanisms for
+           laying out graphs, SIAM J. Discrete Math., 5 (1992), to appear.
+958                      LENWOOD S. HEATH AND ARNOLD L. ROSENBERG
+
+[17] W.-L. Hsu, Maximum weight clique algorithms for circular-arc graphs and circle graphs, SIAM J. Comput.,
+          14 (1985), pp. 224-231.
+ 18] D.B. JOHNSON, A priority queue in which initialization and queue operations take O(log log D) time, Math.
+          Systems Theory, 15 (1982), pp. 295-309.
+[19] D. LICHTENSTEIN, Planar formulae and their uses, SIAM J. Comput., 11 (1982), pp. 329-343.
+[20] D.J. MUDER, M. L. WEAVER, AND D. B. WEST, Pagenumber ofcomplete bipartite graphs, J. Graph Theory,
+          12 (1988), pp. 469-489.
+[21] B. OBRENIt, Embedding de Bruijn and shuffle-exchange graphs in five pages, in Proceedings of the 3rd
+          Annual ACM Symposium on Parallel Algorithms and Architectures, Hilton Head, SC, 1991, pp.
+          137-146.
+[22] C. H. PAPADIMITRIOU AND M. YANNAKAmS, Towards an architecture-independent analysis ofparallel al-
+         gorithms, in Proceedings of the 20th Annual ACM Symposium on Theory of Computing, Chicago,
+          IL, 1988, pp. 510--513.
+[23] A. REIBMAN, DIOGENES layouts using queues, typescript, Department of Computer Science, Duke
+          University, Durham, NC, 1984.
+[24] A. L. ROSENBERG, The DIOGENES approach to testable fault-tolerant arrays ofprocessors, IEEE Trans.
+          Comput., C-32 (1983), pp. 902-910.
+[25] M.M. SYSLO AND M. IRI, Efficient outerplanarity testing, Fund. Inform., 2 (1979), pp. 261-275.
+[26] R.E. TARJAN, Sorting using networks ofqueues and stacks, J. Assoc. Comput. Mach., 19 (1972), pp. 341-
+          346.
+[27] M. YANNAKAKIS, Embedding planar graphs in fourpages, J. Comput. System Sci., 38 (1989), pp. 36-67.
+
