@@ -1,0 +1,7 @@
+{
+  "id": "Q050",
+  "source_definition": "The source gives a simple graph. Its outputs are vertex orders with no nested pair of independent edges, or NO-SOLUTION.",
+  "target_definition": "A queue layout consists of a vertex order and a partition of edges into queues, with no two independent edges nested within a queue. The source permits one queue and the target permits two; outputs include the order and queue assignment.",
+  "required_result": "Construct deterministic polynomial-time maps F and G: F sends every legal source instance to a legal target instance, and G(x,y) is a valid source output for every valid output y of F(x). Preserve the stated threshold, domain and promises. The requested complexity conclusion is NP-hardness for the stated target problem.",
+  "equation": ""
+}
